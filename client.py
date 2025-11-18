@@ -16,6 +16,51 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+async def get_doc():
+    from opensearchpy import OpenSearch, RequestsHttpConnection
+    from requests_aws4auth import AWS4Auth
+    import boto3
+
+    # Get credentials
+    credentials = boto3.Session().get_credentials()
+
+    # For SEARCH operations, use 'aoss'
+    awsauth = AWS4Auth(
+        credentials.access_key,
+        credentials.secret_key,
+        'us-east-1',  # your region
+        'aoss',  # MUST be 'aoss' for data plane operations
+        session_token=credentials.token
+    )
+
+    # Create OpenSearch client pointing to your collection endpoint
+    client = OpenSearch(
+        hosts=[{
+            'host': 'https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com',
+            'port': 443
+        }],
+        http_auth=awsauth,
+        use_ssl=True,
+        verify_certs=True,
+        connection_class=RequestsHttpConnection,
+        pool_maxsize=20
+    )
+
+    # Now search should work
+    response = client.search(
+        index='ei_articles_index',
+        body = {
+                "query": {
+                    "match": {
+                        "url": 'https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'
+                    }
+                }
+            }
+    )
+
+    print(response)
+
+
 async def list_opensearch_collections(region="us-east-1"):
     """
     List all OpenSearch Serverless collections in the given AWS region.
@@ -175,4 +220,4 @@ if __name__ == "__main__":
     # asyncio.run(embed())
     # asyncio.run(connect_and_index())
     # asyncio.run(search_index('https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
-    asyncio.run(list_opensearch_collections())
+    asyncio.run(get_doc())
