@@ -36,7 +36,7 @@ async def get_doc():
     # Create OpenSearch client pointing to your collection endpoint
     client = OpenSearch(
         hosts=[{
-            'host': 'https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com',
+            'host': 'tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com',
             'port': 443
         }],
         http_auth=awsauth,
