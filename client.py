@@ -73,34 +73,34 @@ async def list_opensearch_collections(region="us-east-1"):
 
         print("*******************INDEX CREATE******************", response)
 
-        doc = {"text": "Hello world!"}
-        response = await client.index(index="ei_articles_index", body=doc)
-        print("***************SUCCESSFUL***************",response)
+        # doc = {"text": "Hello world!"}
+        # response = await client.index(index="ei_articles_index", body=doc)
+        # print("***************SUCCESSFUL***************",response)
 
-        body = {
-            "query": {
-                "match": {
-                    "url": "https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf"
-                }
-            }
-        }
+        # body = {
+        #     "query": {
+        #         "match": {
+        #             "url": "https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf"
+        #         }
+        #     }
+        # }
         
-        response = await client.search(
-            CollectionName="clm-research-assistant",
-            IndexName="ei_articles_index",
-            Body=body
-        )
+        # response = await client.search(
+        #     CollectionName="clm-research-assistant",
+        #     IndexName="ei_articles_index",
+        #     Body=body
+        # )
 
-        # Only hits part:
-        hits = response.get("hits", {}).get("hits", [])
+        # # Only hits part:
+        # hits = response.get("hits", {}).get("hits", [])
 
-        output = {
-            "count": len(hits),
-            "hits": hits,
-            "raw": response          # keep raw if needed
-        }
+        # output = {
+        #     "count": len(hits),
+        #     "hits": hits,
+        #     "raw": response          # keep raw if needed
+        # }
 
-        print("********************OUTPUT*******************", output)
+        # print("********************OUTPUT*******************", output)
 
         response = client.list_collections()  # No parameters required
         collections = response.get("collectionSummaries", [])
@@ -221,7 +221,7 @@ async def embed():
         print(response)
 
 if __name__ == "__main__":
-    # asyncio.run(embed())
+    asyncio.run(list_opensearch_collections())
     # asyncio.run(connect_and_index())
     # asyncio.run(search_index('https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
-    asyncio.run(get_doc())
+    # asyncio.run(get_doc())
