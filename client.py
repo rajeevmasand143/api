@@ -16,6 +16,31 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def list_opensearch_collections(region="us-east-1"):
+    """
+    List all OpenSearch Serverless collections in the given AWS region.
+    """
+    client = boto3.client("opensearchserverless", region_name=region)
+
+    try:
+        response = client.list_collections()  # No parameters required
+        collections = response.get("collectionSummaries", [])
+
+        if not collections:
+            print("No collections found.")
+            return []
+
+        print("Available OpenSearch Serverless Collections:")
+        for col in collections:
+            print(f"- Name: {col['name']} | ID: {col['id']} | Status: {col['status']}")
+
+        return collections
+
+    except Exception as e:
+        print(f"Error listing collections: {e}")
+        return []
+ 
+
 async def search_index(url: str, profile: str = None):
     try:
         # Create session (with or without profile)
@@ -52,7 +77,6 @@ async def search_index(url: str, profile: str = None):
         logger.error(f"OpenSearch search failed: {str(e)}")
         raise
 
- 
 
 async def search_articles(collection, index, query):
     body = {
@@ -120,4 +144,5 @@ async def embed():
 if __name__ == "__main__":
     # asyncio.run(embed())
     # asyncio.run(connect_and_index())
-    asyncio.run(search_index('https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
+    # asyncio.run(search_index('https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
+    asyncio.run(list_opensearch_collections())
