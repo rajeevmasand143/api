@@ -16,12 +16,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-async def search_index(url: str, profile: str = None):
+async def search_index2(url: str, profile: str = None):
     try:
         # Create session (with or without profile)
         session = aioboto3.Session(profile_name=profile) if profile else aioboto3.Session()
 
-        async with session.client("opensearchserverless", region_name="us-east-1") as client:
+        async with session.client("opensearch", region_name="us-east-1") as client:
             
             body = {
                 "query": {
