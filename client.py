@@ -6,6 +6,40 @@ from CommonService.async_commonsession.commonsession import (
     CommonSessionConfig,
 )
 
+import asyncio
+from opensearchpy import AsyncOpenSearch, RequestsHttpConnection
+from requests_aws4auth import AWS4Auth
+import boto3
+
+async def connect_and_index():
+    region = "us-east-1"
+    service = "aoss"  # OpenSearch Serverless
+    collection_endpoint = "https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com"  # replace with your collection endpoint
+
+    # Get temporary credentials from AWS CLI profile
+    session = boto3.Session(profile_name="")  # leave blank to use default profile
+    credentials = session.get_credentials().get_frozen_credentials()
+    awsauth = AWS4Auth(
+        credentials.access_key,
+        credentials.secret_key,
+        region,
+        service,
+        session_token=credentials.token
+    )
+
+    # Connect to OpenSearch Serverless
+    async with AsyncOpenSearch(
+        hosts=[collection_endpoint],
+        http_auth=awsauth,
+        use_ssl=True,
+        verify_certs=True,
+        connection_class=RequestsHttpConnection
+    ) as client:
+        # Example: index a document
+        doc = {"text": "Hello world!"}
+        response = await client.index(index="ei_articles_index", body=doc)
+        print(response)
+
 
 async def embed():
     async with CommonSession(
@@ -17,6 +51,6 @@ async def embed():
         response = await titan_embedding.generate_embedding({"inputText": "Hello world!"})
         print(response)
 
-
 if __name__ == "__main__":
-    asyncio.run(embed())
+    # asyncio.run(embed())
+    asyncio.run(connect_and_index())
