@@ -16,7 +16,8 @@ class BedrockClient:
         self.config = config
         
         try:
-            session = boto3.Session(profile_name=config.PROFILE_NAME)
+            # session = boto3.Session(profile_name=config.PROFILE_NAME)
+            session = boto3.Session()
             credentials = session.get_credentials().get_frozen_credentials()
 
             self.client = boto3.client(

@@ -15,11 +15,12 @@ def build_async_client(settings:OpenSearchSettings):
         max_retries=settings.max_retries,
         timeout=settings.timeout
     )
-    if settings.profile_name:
-        session = boto3.Session(profile_name=settings.profile_name)
-    else:
-        session = boto3.Session(profile_name=settings.profile_name)
+    # if settings.profile_name:
+    #     session = boto3.Session(profile_name=settings.profile_name)
+    # else:
+    #     session = boto3.Session(profile_name=settings.profile_name)
 
+    session = boto3.Session()
     credentials=session.get_credentials()
     kwargs["http_auth"]=AWSV4SignerAsyncAuth(credentials,settings.os_region,settings.service)
 
