@@ -32,33 +32,36 @@ async def search_articles(collection, index, query):
 async def connect_and_index():
     region = "us-east-1"
     service = "aoss"  # OpenSearch Serverless
-    collection_endpoint = "https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com"  # replace with your collection endpoint
+    collection_endpoint = "https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com"
     index_name = "ei_articles_index"
 
     # Use IAM role credentials automatically provided in sandbox
     session = boto3.Session()
-    # credentials = session.get_credentials().get_frozen_credentials()
+    credentials = session.get_credentials().get_frozen_credentials()
+
     awsauth = AWS4Auth(
-        # credentials.access_key,
-        # credentials.secret_key,
+        credentials.access_key,
+        credentials.secret_key,
         region,
         service,
-        # session_token=credentials.token
-        session = session
+        session_token=credentials.token
     )
 
     # Connect to OpenSearch Serverless
-    async with AsyncOpenSearch(
+    client = AsyncOpenSearch(
         hosts=[collection_endpoint],
         http_auth=awsauth,
         use_ssl=True,
         verify_certs=True,
         connection_class=RequestsHttpConnection
-    ) as client:
-        # Example: index a document
+    )
+
+    try:
         doc = {"text": "Hello world!"}
         response = await client.index(index=index_name, body=doc)
         print(response)
+    finally:
+        await client.transport.close()
 
 
 async def embed():
