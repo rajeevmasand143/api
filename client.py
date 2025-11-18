@@ -5,6 +5,7 @@ from CommonService.async_commonsession.commonsession import (
     CommonSession,
     CommonSessionConfig,
 )
+from CommonService.async_opensearch import build_async_client
 
 import asyncio
 from opensearchpy import AsyncOpenSearch, RequestsHttpConnection
@@ -13,6 +14,8 @@ import boto3
 
 import aioboto3
 import logging
+
+from api.routes.search_opensearch import OpenSearchSettings
 
 logger = logging.getLogger(__name__)
 
@@ -65,11 +68,20 @@ async def list_opensearch_collections(region="us-east-1"):
     """
     List all OpenSearch Serverless collections in the given AWS region.
     """
+    # client = boto3.client("opensearchserverless", region_name=region)
     client = boto3.client("opensearchserverless", region_name=region)
 
     try:
 
-        response = await client.indices.index(index="ei_articles_index_2", body={})
+        settings=OpenSearchSettings(
+            os_endpoint="tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com",
+            os_port=443,
+            profile_name="",
+            os_region="us-east-1",
+        )
+        client = build_async_client(settings)
+
+        response = await client.indices.create(index="ei_articles_index_2", body={})
 
         print("*******************INDEX CREATE******************", response)
 
