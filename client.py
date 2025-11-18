@@ -69,6 +69,10 @@ async def list_opensearch_collections(region="us-east-1"):
 
     try:
 
+        response = await client.indices.index(index="ei_articles_index_2", body={})
+
+        print("*******************INDEX CREATE******************", response)
+
         doc = {"text": "Hello world!"}
         response = await client.index(index="ei_articles_index", body=doc)
         print("***************SUCCESSFUL***************",response)
