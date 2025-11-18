@@ -20,7 +20,7 @@ async def search_articles(collection, index, query):
         }
     }
 
-    async with CommonSession(client_name="opensearch-serverless", region="us-east-1", profile_name="") as client:
+    async with CommonSession(client_name="aoss", region="us-east-1", profile_name="") as client:
         response = await client.search(
             CollectionName=collection,
             IndexName=index,
@@ -37,13 +37,14 @@ async def connect_and_index():
 
     # Use IAM role credentials automatically provided in sandbox
     session = boto3.Session()
-    credentials = session.get_credentials().get_frozen_credentials()
+    # credentials = session.get_credentials().get_frozen_credentials()
     awsauth = AWS4Auth(
-        credentials.access_key,
-        credentials.secret_key,
+        # credentials.access_key,
+        # credentials.secret_key,
         region,
         service,
-        session_token=credentials.token
+        # session_token=credentials.token
+        session = session
     )
 
     # Connect to OpenSearch Serverless
@@ -72,5 +73,5 @@ async def embed():
 
 if __name__ == "__main__":
     # asyncio.run(embed())
-    # asyncio.run(connect_and_index())
-    asyncio.run(search_articles('https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com','ei_articles_index','https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
+    asyncio.run(connect_and_index())
+    # asyncio.run(search_articles('https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com','ei_articles_index','https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf'))
