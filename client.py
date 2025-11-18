@@ -24,6 +24,10 @@ async def list_opensearch_collections(region="us-east-1"):
 
     try:
 
+        doc = {"text": "Hello world!"}
+        response = await client.index(index="ei_articles_index", body=doc)
+        print("***************SUCCESSFUL***************",response)
+
         body = {
             "query": {
                 "match": {
@@ -51,7 +55,7 @@ async def list_opensearch_collections(region="us-east-1"):
 
         response = client.list_collections()  # No parameters required
         collections = response.get("collectionSummaries", [])
-        
+
         if not collections:
             print("No collections found.")
             return []
