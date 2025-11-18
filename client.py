@@ -16,16 +16,42 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def list_opensearch_collections(region="us-east-1"):
+async def list_opensearch_collections(region="us-east-1"):
     """
     List all OpenSearch Serverless collections in the given AWS region.
     """
     client = boto3.client("opensearchserverless", region_name=region)
 
     try:
+
+        body = {
+            "query": {
+                "match": {
+                    "url": "https://storage.courtlistener.com/recap/gov.uscourts.mied.388874/gov.uscourts.mied.388874.1.0.pdf"
+                }
+            }
+        }
+        
+        response = await client.search(
+            CollectionName="clm-research-assistant",
+            IndexName="ei_articles_index",
+            Body=body
+        )
+
+        # Only hits part:
+        hits = response.get("hits", {}).get("hits", [])
+
+        output = {
+            "count": len(hits),
+            "hits": hits,
+            "raw": response          # keep raw if needed
+        }
+
+        print("********************OUTPUT*******************", output)
+
         response = client.list_collections()  # No parameters required
         collections = response.get("collectionSummaries", [])
-
+        
         if not collections:
             print("No collections found.")
             return []
