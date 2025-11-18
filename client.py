@@ -20,7 +20,7 @@ async def search_articles(collection, index, query):
         }
     }
 
-    async with CommonSession(client_name="aoss", region="us-east-1", profile_name="") as client:
+    async with CommonSession(client_name="opensearch-serverless", region="us-east-1", profile_name="") as client:
         response = await client.search(
             CollectionName=collection,
             IndexName=index,
