@@ -27,7 +27,7 @@ AWS_PROFILE_NAME = "sandbox"
 
 region = "us-east-1"
 
-credentials = boto3.Session(profile_name=AWS_PROFILE_NAME).get_credentials()
+credentials = boto3.Session().get_credentials()
 
 auth = AWSV4SignerAuth(credentials, region, SERVICE)
  
