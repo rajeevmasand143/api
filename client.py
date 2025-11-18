@@ -11,13 +11,14 @@ from opensearchpy import AsyncOpenSearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import boto3
 
-async def connect_and_index():
+async def embed_and_index():
     region = "us-east-1"
     service = "aoss"  # OpenSearch Serverless
     collection_endpoint = "https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com"  # replace with your collection endpoint
+    index_name = "ei_articles_index"
 
-    # Get temporary credentials from AWS CLI profile
-    session = boto3.Session(profile_name="")  # leave blank to use default profile
+    # Use IAM role credentials automatically provided in sandbox
+    session = boto3.Session()
     credentials = session.get_credentials().get_frozen_credentials()
     awsauth = AWS4Auth(
         credentials.access_key,
@@ -37,7 +38,7 @@ async def connect_and_index():
     ) as client:
         # Example: index a document
         doc = {"text": "Hello world!"}
-        response = await client.index(index="ei_articles_index", body=doc)
+        response = await client.index(index=index_name, body=doc)
         print(response)
 
 
