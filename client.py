@@ -11,7 +11,7 @@ from opensearchpy import AsyncOpenSearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import boto3
 
-async def embed_and_index():
+async def connect_and_index():
     region = "us-east-1"
     service = "aoss"  # OpenSearch Serverless
     collection_endpoint = "https://tv9xe9sa7lpqtaqr5o9k.us-east-1.aoss.amazonaws.com"  # replace with your collection endpoint
