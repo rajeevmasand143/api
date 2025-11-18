@@ -21,7 +21,7 @@ async def search_index(url: str, profile: str = None):
         # Create session (with or without profile)
         session = aioboto3.Session(profile_name=profile) if profile else aioboto3.Session()
 
-        async with session.client("aoss", region_name="us-east-1") as client:
+        async with session.client("opensearchserverless", region_name="us-east-1") as client:
             
             body = {
                 "query": {
